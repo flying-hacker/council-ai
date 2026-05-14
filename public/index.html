@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Council" />
+  <meta name="theme-color" content="#0c0c0c" />
+  <title>Council</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0c0c;
+      --border: #1c1c1c;
+      --border2: #222;
+      --text: #e8e8e8;
+      --text2: #888;
+      --text3: #333;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
+    }
+
+    /* HEADER */
+    header {
+      padding: 18px 20px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 0.5px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .wordmark {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      color: var(--text);
+      text-transform: uppercase;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    #headerDots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    #settingsToggle {
+      background: transparent;
+      border: none;
+      color: var(--text3);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* SCROLL */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .scroll-area::-webkit-scrollbar { width: 2px; }
+    .scroll-area::-webkit-scrollbar-thumb { background: #1e1e1e; }
+
+    /* SETTINGS */
+    #settingsPanel {
+      display: none;
+      padding: 20px;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .settings-label {
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .key-row { margin-bottom: 12px; }
+
+    .key-row-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+      margin-bottom: 5px;
+    }
+
+    .key-row-label a { color: var(--text3); text-decoration: none; }
+
+    .key-input {
+      width: 100%;
+      background: #0a0a0a;
+      border: 0.5px solid var(--border2);
+      border-radius: 5px;
+      padding: 9px 12px;
+      color: var(--text2);
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+    }
+
+    .settings-note {
+      font-size: 10px;
+      color: #222;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    /* ASK */
+    #askSection { padding: 28px 20px 24px; }
+
+    .ask-hint {
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    #questionInput {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 0.5px solid var(--border);
+      border-radius: 0;
+      padding: 0 0 20px;
+      color: var(--text2);
+      font-size: 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      min-height: 90px;
+    }
+
+    #questionInput::placeholder { color: #2a2a2a; }
+
+    .ask-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    #modelCount {
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+    }
+
+    #askBtn {
+      background: #e8e8e8;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      color: #0c0c0c;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    #askBtn:disabled { background: #1a1a1a; color: #2a2a2a; cursor: not-allowed; }
+    #askBtn:active:not(:disabled) { opacity: 0.8; }
+
+    /* RESULTS */
+    #resultsSection { display: none; }
+
+    .results-header {
+      padding: 16px 20px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    #newBtn {
+      background: transparent;
+      border: none;
+      color: var(--text3);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    #resultDots { display: flex; gap: 5px; align-items: center; }
+
+    #questionRecap {
+      padding: 16px 20px;
+      font-size: 13px;
+      color: #444;
+      line-height: 1.55;
+      border-bottom: 0.5px solid #141414;
+      font-weight: 300;
+    }
+
+    .responses-wrap { padding: 20px 20px 0; }
+
+    .responses-label {
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .consensus-wrap {
+      margin: 4px 20px 0;
+      padding: 16px;
+      border: 0.5px solid #1e1e1e;
+      border-radius: 8px;
+    }
+
+    .consensus-label {
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    #consensusBox { min-height: 40px; }
+
+    .new-q-btn {
+      display: block;
+      margin: 16px 20px 28px;
+      text-align: center;
+      font-size: 11px;
+      color: #282828;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-family: 'DM Sans', sans-serif;
+      padding: 12px;
+      border: 0.5px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      width: calc(100% - 40px);
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="wordmark">Council</div>
+    <div class="header-right">
+      <div id="headerDots"></div>
+      <button id="settingsToggle">Configure</button>
+    </div>
+  </header>
+
+  <div class="scroll-area" id="scrollArea">
+
+    <div id="settingsPanel">
+      <div class="settings-label">API Keys</div>
+      <div class="key-row">
+        <div class="key-row-label">
+          <span>OpenAI (ChatGPT)</span>
+          <a href="https://platform.openai.com/api-keys" target="_blank">get key ↗</a>
+        </div>
+        <input class="key-input" type="password" id="keyGPT" placeholder="sk-..." />
+      </div>
+      <div class="key-row">
+        <div class="key-row-label">
+          <span>Google (Gemini)</span>
+          <a href="https://aistudio.google.com/app/apikey" target="_blank">get key ↗</a>
+        </div>
+        <input class="key-input" type="password" id="keyGemini" placeholder="AIza..." />
+      </div>
+      <div class="key-row">
+        <div class="key-row-label">
+          <span>xAI (Grok)</span>
+          <a href="https://console.x.ai" target="_blank">get key ↗</a>
+        </div>
+        <input class="key-input" type="password" id="keyGrok" placeholder="xai-..." />
+      </div>
+      <div class="settings-note">Keys are saved in your browser only and sent to your own server.</div>
+    </div>
+
+    <div id="askSection">
+      <div class="ask-hint">Your question</div>
+      <textarea id="questionInput" placeholder="Ask anything — all active models will answer, then reach consensus…" rows="4"></textarea>
+      <div class="ask-footer">
+        <span id="modelCount">1 model</span>
+        <button id="askBtn" disabled>Ask</button>
+      </div>
+    </div>
+
+    <div id="resultsSection">
+      <div class="results-header">
+        <button id="newBtn">← New question</button>
+        <div id="resultDots"></div>
+      </div>
+      <div id="questionRecap"></div>
+      <div class="responses-wrap">
+        <div class="responses-label">Responses</div>
+        <div id="responseRows"></div>
+      </div>
+      <div class="consensus-wrap">
+        <div class="consensus-label">Consensus</div>
+        <div id="consensusBox"></div>
+      </div>
+      <button class="new-q-btn" id="newBtn2">Ask another question</button>
+    </div>
+
+  </div>
+</div>
+<script src="/app.js"></script>
+<script>
+  document.getElementById('newBtn2').addEventListener('click', () => {
+    document.getElementById('newBtn').click();
+  });
+  // Sync result dots with header dots
+  const obs = new MutationObserver(() => {
+    const rd = document.getElementById('resultDots');
+    const hd = document.getElementById('headerDots');
+    if (rd && hd) rd.innerHTML = hd.innerHTML;
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+    const hd = document.getElementById('headerDots');
+    if (hd) obs.observe(hd, { childList: true, subtree: true });
+  });
+</script>
+</body>
+</html>
