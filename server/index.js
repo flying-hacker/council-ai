@@ -22,7 +22,7 @@ app.post('/api/claude', async (req, res) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 1000,
         system: systemPrompt || 'You are a helpful, concise assistant. Answer clearly and factually.',
         messages: [{ role: 'user', content: question }],
@@ -69,7 +69,7 @@ app.post('/api/gemini', async (req, res) => {
   try {
     const { question } = req.body;
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -98,7 +98,7 @@ app.post('/api/grok', async (req, res) => {
         'Authorization': `Bearer ${process.env.GROK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'grok-2-latest',
+        model: 'grok-3-latest',
         max_tokens: 1000,
         messages: [
           { role: 'system', content: 'You are a helpful, concise assistant. Answer clearly and factually.' },
