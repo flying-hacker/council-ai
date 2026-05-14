@@ -69,7 +69,7 @@ app.post('/api/gemini', async (req, res) => {
   try {
     const { question } = req.body;
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -98,7 +98,7 @@ app.post('/api/grok', async (req, res) => {
         'Authorization': `Bearer ${process.env.GROK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'grok-3-latest',
+        model: 'grok-4.3',
         max_tokens: 1000,
         messages: [
           { role: 'system', content: 'You are a helpful, concise assistant. Answer clearly and factually.' },
