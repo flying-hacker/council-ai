@@ -145,7 +145,7 @@ Be concise. The consensus answer should stand alone as a complete, useful respon
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 1000,
         system: 'You are an expert at synthesizing multiple AI responses into a single best answer. Be clear, accurate, and concise.',
         messages: [{ role: 'user', content: prompt }],
